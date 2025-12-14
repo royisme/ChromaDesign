@@ -294,7 +294,7 @@ function getResponse() {
   return event._res;
 }
 async function getStartManifest() {
-  const { tsrStartManifest } = await import("./assets/_tanstack-start-manifest_v-D_w2A5wh.js");
+  const { tsrStartManifest } = await import("./assets/_tanstack-start-manifest_v-BPJ5LDax.js");
   const startManifest = tsrStartManifest();
   const rootRoute = startManifest.routes[rootRouteId] = startManifest.routes[rootRouteId] || {};
   rootRoute.assets = rootRoute.assets || [];
@@ -329,12 +329,12 @@ async function getStartManifest() {
   };
   return manifest2;
 }
-const manifest = { "cbb8ca69048418e62742f2c511faa56326b80ace384144a35bb3e0bf5e8124be": {
-  functionName: "fetchPosts_createServerFn_handler",
-  importer: () => import("./assets/posts-BYKF2dwS.js")
-}, "0029094260fc8f554fa3ac223696de0e9591567ec6420250e896c91244c812c5": {
-  functionName: "fetchPost_createServerFn_handler",
-  importer: () => import("./assets/posts-BYKF2dwS.js")
+const manifest = { "dd5504d298173b263e40e18d9eb4b81df8be4f76e96545e2f26ea35aea0d8cf6": {
+  functionName: "generateColorScheme_createServerFn_handler",
+  importer: () => import("./assets/gemini-BN0ngMcu.js")
+}, "674df86f75872e77095133589b6f8b2f730d815f2fda81bd1f35618d39b2359b": {
+  functionName: "editImage_createServerFn_handler",
+  importer: () => import("./assets/gemini-BN0ngMcu.js")
 } };
 async function getServerFnById(id) {
   const serverFnInfo = manifest[id];
@@ -615,7 +615,7 @@ function createStartHandler(cb) {
   let routerEntry = null;
   const getEntries = async () => {
     if (routerEntry === null) {
-      routerEntry = await import("./assets/router-BBo8Yz2V.js").then((n) => n.r);
+      routerEntry = await import("./assets/router-TgQNBIY6.js");
     }
     if (startEntry === null) {
       startEntry = await import("./assets/start-HYkvq4Ni.js");
@@ -954,8 +954,8 @@ function createServerEntry(entry) {
 const server = createServerEntry({ fetch });
 export {
   TSS_SERVER_FUNCTION as T,
-  createServerRpc as a,
-  createServerFn as c,
+  createServerFn as a,
+  createServerRpc as c,
   createServerEntry,
   server as default,
   getServerFnById as g

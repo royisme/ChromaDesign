@@ -5,6 +5,9 @@ yarn.lock
 .DS_Store
 .cache
 .env
+.env.*
+.dev.vars
+.dev.vars.*
 .vercel
 .output
 /build/
@@ -16,3 +19,24 @@ yarn.lock
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+.tanstack
+#-- ai --sentry-build-plugin
+# Ignore generated files and directories
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+UserAgents.md
+.works
+.claude
+.serena
+.copal
+.gemini
+.copilot
+.agent
+.shared
+.cursorignore
+.codex/
+test-results
+
+# cloudflare
+dist

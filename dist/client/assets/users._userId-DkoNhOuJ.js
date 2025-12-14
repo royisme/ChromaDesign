@@ -1,1 +1,0 @@
-import{R as a,a as n,j as s}from"./main-OYjY0gZ4.js";import{u as t}from"./useSuspenseQuery-MmdL0Ev3.js";function c(){const r=a.useParams(),e=t(n(r.userId)).data;return s.jsxs("div",{className:"space-y-2",children:[s.jsx("h4",{className:"text-xl font-bold underline",children:e.name}),s.jsx("div",{className:"text-sm",children:e.email})]})}export{c as component};
