@@ -1,0 +1,15 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "chroma-design",
+  "compatibility_date": "2025-01-01",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // Non-sensitive environment variables
+  "vars": {
+    "ENVIRONMENT": "production",
+  },
+
+  // Secrets (GEMINI_API_KEY) should be set via:
+  // - Local development: .dev.vars file
+  // - Production: wrangler secret put GEMINI_API_KEY
+}
