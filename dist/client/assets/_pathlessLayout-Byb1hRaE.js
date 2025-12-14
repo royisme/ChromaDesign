@@ -1,0 +1,1 @@
+import{j as s,O as t}from"./main-OYjY0gZ4.js";function n(){return s.jsxs("div",{className:"p-2",children:[s.jsx("div",{children:"I'm a pathless layout"}),s.jsx("div",{children:s.jsx(t,{})})]})}export{n as component};
