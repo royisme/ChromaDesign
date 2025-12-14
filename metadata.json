@@ -1,0 +1,5 @@
+{
+  "name": "ChromaGen AI",
+  "description": "Intelligently extracts semantic color schemes from photos using Gemini Vision, exporting to TailwindCSS and standard CSS variables.",
+  "requestFramePermissions": []
+}
