@@ -30,6 +30,9 @@ interface TurnstileOptions {
   theme?: 'light' | 'dark' | 'auto'
   size?: 'normal' | 'compact' | 'invisible'
   appearance?: 'always' | 'execute' | 'interaction-only'
+  'refresh-expired'?: 'auto' | 'manual' | 'never'
+  retry?: 'auto' | 'never'
+  'retry-interval'?: number
 }
 
 export interface TurnstileProps {
@@ -78,11 +81,15 @@ export function Turnstile({
     }
 
     // Render new widget
+    // Note: Using retry: 'never' to avoid infinite retry loops on Workers subdomains
+    // that don't support /cdn-cgi/ paths (PAT challenge)
     widgetIdRef.current = window.turnstile.render(containerRef.current, {
       sitekey: siteKey,
       callback: onVerify,
       'error-callback': onError,
       'expired-callback': onExpire,
+      'refresh-expired': 'auto',
+      retry: 'never',
       theme,
       size,
     })
