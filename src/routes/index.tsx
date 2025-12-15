@@ -1,9 +1,9 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Palette, Zap, Code2, Layout, ArrowRight, Upload } from 'lucide-react'
-import { Button } from '~/components/ui/button'
-import { ThemeGallery } from '~/components/chroma/ThemeGallery'
-import { AdBanner } from '~/components/chroma/AdBanner'
-import { seo } from '~/utils/seo'
+import { Button } from '@/client/ui/button'
+import { ThemeGallery } from '@/client/components/chroma/ThemeGallery'
+import { AdBanner } from '@/client/components/chroma/AdBanner'
+import { seo } from '@/utils/seo'
 
 export const Route = createFileRoute('/')({
   head: () => ({

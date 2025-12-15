@@ -205,6 +205,11 @@
   to { transform: translateY(0); opacity: 1; }
 }
 
+@keyframes slide-in-from-top {
+  from { transform: translateY(-10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
 .animate-in {
   animation-duration: 0.5s;
   animation-fill-mode: both;
@@ -227,6 +232,5 @@
 }
 
 .slide-in-from-top-4 {
-  animation-name: slide-in-from-bottom;
-  animation-direction: reverse;
+  animation-name: slide-in-from-top;
 }

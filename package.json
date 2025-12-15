@@ -5,17 +5,21 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "vite build && tsc --noEmit",
+    "check": "tsc --noEmit",
+    "build": "vite build",
+    "build:staging": "vite build --mode staging",
     "preview": "vite preview",
     "start": "bunx srvx --prod -s ../client dist/server/server.js",
-    "deploy": "bun run build && wrangler deploy",
-    "deploy:dev": "bun run build && wrangler deploy --env dev",
-    "cf-typegen": "wrangler types"
+    "deploy": "bun run build && wrangler deploy --env production",
+    "deploy:staging": "bun run build:staging && wrangler deploy --env staging",
+    "cf-typegen": "wrangler types --env dev",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ai": "vitest run tests/ai-color-scheme.test.ts"
   },
   "dependencies": {
     "@cloudflare/vite-plugin": "^1.17.1",
     "@fingerprintjs/fingerprintjs": "^5.0.1",
-    "@google/genai": "^1.33.0",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-slot": "^1.2.4",
@@ -31,11 +35,13 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.561.0",
+    "openai": "^6.10.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "react-dropzone": "^14.3.8",
     "redaxios": "^0.5.1",
-    "tailwind-merge": "^3.4.0"
+    "tailwind-merge": "^3.4.0",
+    "zod": "^4.1.13"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20251213.0",

@@ -3,27 +3,23 @@
   "name": "chroma-design",
   "compatibility_date": "2025-01-01",
   "compatibility_flags": ["nodejs_compat"],
-
-  // Non-sensitive environment variables
-  "vars": {
-    "ENVIRONMENT": "production",
+  "main": "@tanstack/react-start/server-entry",
+  "observability": {
+    "enabled": true
   },
 
-  // KV namespaces (Production)
-  "kv_namespaces": [
-    {
-      "binding": "USAGE_KV",
-      "id": "cc1493e9deff497f97b6bac48eba9a17",
-      "preview_id": "48b8ab7c8f7c4eabb91574f2ab0d974d"
-    }
-  ],
-
   "env": {
-    // Development Environment (deployed from dev branch)
+    // Local development - reads secrets from .dev.vars
     "dev": {
       "name": "chroma-design-dev",
+      "ai": {
+        "binding": "AI"
+      },
       "vars": {
-        "ENVIRONMENT": "development"
+        "ENVIRONMENT": "development",
+        "AI_GATEWAY_ID": "chroma-design",
+        "AI_PROVIDER": "openrouter",
+        "AI_MODEL": "google/gemini-2.5-flash"
       },
       "kv_namespaces": [
         {
@@ -32,11 +28,46 @@
           "preview_id": "48b8ab7c8f7c4eabb91574f2ab0d974d"
         }
       ]
+    },
+
+    // Staging environment
+    "staging": {
+      "name": "chroma-design-staging",
+      "ai": {
+        "binding": "AI"
+      },
+      "vars": {
+        "ENVIRONMENT": "staging",
+        "AI_GATEWAY_ID": "chroma-design",
+        "AI_PROVIDER": "openrouter",
+        "AI_MODEL": "google/gemini-2.5-flash"
+      },
+      "kv_namespaces": [
+        {
+          "binding": "USAGE_KV",
+          "id": "abf526f5ff7843d2b45365f1ce8225d7"
+        }
+      ]
+    },
+
+    // Production environment
+    "production": {
+      "name": "chroma-design",
+      "ai": {
+        "binding": "AI"
+      },
+      "vars": {
+        "ENVIRONMENT": "production",
+        "AI_GATEWAY_ID": "chroma-design",
+        "AI_PROVIDER": "openrouter",
+        "AI_MODEL": "google/gemini-2.5-flash"
+      },
+      "kv_namespaces": [
+        {
+          "binding": "USAGE_KV",
+          "id": "cc1493e9deff497f97b6bac48eba9a17"
+        }
+      ]
     }
   }
-
-  // Secrets (GEMINI_API_KEY) should be set via:
-  // - Local development: .dev.vars file
-  // - Production: wrangler secret put GEMINI_API_KEY
-  // - Dev: wrangler secret put GEMINI_API_KEY --env dev
 }

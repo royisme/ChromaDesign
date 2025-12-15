@@ -32,6 +32,7 @@ export enum ExportFormat {
 export interface GenerateColorRequest {
   imageBase64: string
   mimeType: string
+  turnstileToken?: string // Turnstile verification token
 }
 
 /**

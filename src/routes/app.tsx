@@ -1,25 +1,29 @@
 import { useState, useCallback, useEffect } from 'react'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { Palette, Wand2, ChevronLeft } from 'lucide-react'
-import { ImageUploader } from '~/components/chroma/ImageUploader'
-import { PaletteDisplay } from '~/components/chroma/PaletteDisplay'
-import { CodeExporter } from '~/components/chroma/CodeExporter'
-import { ThemeGallery } from '~/components/chroma/ThemeGallery'
-import { AdBanner } from '~/components/chroma/AdBanner'
-import { UsageLimitModal } from '~/components/chroma/UsageLimitModal'
-import { UsageIndicator } from '~/components/chroma/UsageIndicator'
-import { Button } from '~/components/ui/button'
+import { ImageUploader } from '@/client/components/chroma/ImageUploader'
+import { PaletteDisplay } from '@/client/components/chroma/PaletteDisplay'
+import { CodeExporter } from '@/client/components/chroma/CodeExporter'
+import { ThemeGallery } from '@/client/components/chroma/ThemeGallery'
+import { AdBanner } from '@/client/components/chroma/AdBanner'
+import { UsageLimitModal } from '@/client/components/chroma/UsageLimitModal'
+import { UsageIndicator } from '@/client/components/chroma/UsageIndicator'
+import { Turnstile } from '@/client/components/Turnstile'
+import { Button } from '@/client/ui/button'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '~/components/ui/dialog'
-import { generateColorScheme } from '~/services/gemini'
-import { useUsageLimit } from '~/hooks/useUsageLimit'
-import type { ColorToken } from '~/types/chroma'
-import { calculateDarkVariant } from '~/utils/colorUtils'
-import { seo } from '~/utils/seo'
+} from '@/client/ui/dialog'
+import { generateColorScheme } from '@/server/services/color-scheme'
+import { useUsageLimit } from '@/client/hooks/useUsageLimit'
+import type { ColorToken } from '@/types/chroma'
+import { calculateDarkVariant } from '@/utils/colorUtils'
+import { seo } from '@/utils/seo'
+
+// Turnstile site key from Vite environment
+const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY as string | undefined
 
 export const Route = createFileRoute('/app')({
   head: () => ({
@@ -72,6 +76,9 @@ function GeneratorApp() {
   const [showExportModal, setShowExportModal] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  // Turnstile State - use state instead of ref to trigger re-render
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
+
   // Usage Limit State
   const { 
     status, 
@@ -112,6 +119,12 @@ function GeneratorApp() {
       return
     }
 
+    // 检查 Turnstile token
+    if (TURNSTILE_SITE_KEY && !turnstileToken) {
+      setError('Please complete the security verification.')
+      return
+    }
+
     // 先消耗额度
     const canProceed = await consume()
     if (!canProceed) {
@@ -124,9 +137,13 @@ function GeneratorApp() {
 
     try {
       const { data: imageBase64, mimeType } = await fileToBase64(file)
-      const result = await generateColorScheme({ data: { imageBase64, mimeType } })
+      const result = await generateColorScheme({ 
+        data: { imageBase64, mimeType, turnstileToken: turnstileToken || undefined } 
+      })
       setColors(result.colors)
       setMood(result.mood)
+      // Reset turnstile token after use
+      setTurnstileToken(null)
     } catch (err: unknown) {
       console.error(err)
       const message = err instanceof Error ? err.message : 'Failed to generate color scheme. Please try again.'
@@ -210,11 +227,11 @@ function GeneratorApp() {
             />
           </section>
 
-          {selectedFile ? (
+{selectedFile ? (
             <div className="space-y-3 animate-in fade-in slide-in-from-top-4 duration-500 shrink-0">
               <Button
                 onClick={() => handleGenerate()}
-                disabled={isGenerating || isUsageLoading}
+                disabled={isGenerating || isUsageLoading || (!!TURNSTILE_SITE_KEY && !turnstileToken)}
                 className="w-full py-3 text-base"
               >
                 {isGenerating ? (
@@ -228,6 +245,22 @@ function GeneratorApp() {
                   </>
                 )}
               </Button>
+              
+              {/* Turnstile verification */}
+              {TURNSTILE_SITE_KEY && (
+                <Turnstile
+                  siteKey={TURNSTILE_SITE_KEY}
+                  onVerify={(token) => {
+                    setTurnstileToken(token)
+                  }}
+                  onExpire={() => {
+                    setTurnstileToken(null)
+                  }}
+                  theme="dark"
+                  size="normal"
+                  className="flex justify-center"
+                />
+              )}
               
               {/* 使用状态指示器 */}
               {status && (
