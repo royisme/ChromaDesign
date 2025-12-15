@@ -31,5 +31,3 @@ jobs:
           command: deploy
           packageManager: bun
           preCommands: bun run build
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}

@@ -32,5 +32,3 @@ jobs:
           packageManager: bun
           # TanStack Start 需要先构建
           preCommands: bun run build
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
