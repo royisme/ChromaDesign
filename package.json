@@ -8,8 +8,8 @@
     "build": "vite build && tsc --noEmit",
     "preview": "vite preview",
     "start": "bunx srvx --prod -s ../client dist/server/server.js",
-    "deploy": "npm run build && wrangler deploy",
-    "deploy:dev": "npm run build && wrangler deploy --env dev",
+    "deploy": "bun run build && wrangler deploy",
+    "deploy:dev": "bun run build && wrangler deploy --env dev",
     "cf-typegen": "wrangler types"
   },
   "dependencies": {
