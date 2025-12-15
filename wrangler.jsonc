@@ -9,7 +9,7 @@
     "ENVIRONMENT": "production",
   },
 
-  // KV namespaces
+  // KV namespaces (Production)
   "kv_namespaces": [
     {
       "binding": "USAGE_KV",
@@ -18,7 +18,25 @@
     }
   ],
 
+  "env": {
+    // Development Environment (deployed from dev branch)
+    "dev": {
+      "name": "chroma-design-dev",
+      "vars": {
+        "ENVIRONMENT": "development"
+      },
+      "kv_namespaces": [
+        {
+          "binding": "USAGE_KV",
+          "id": "abf526f5ff7843d2b45365f1ce8225d7",
+          "preview_id": "48b8ab7c8f7c4eabb91574f2ab0d974d"
+        }
+      ]
+    }
+  }
+
   // Secrets (GEMINI_API_KEY) should be set via:
   // - Local development: .dev.vars file
   // - Production: wrangler secret put GEMINI_API_KEY
+  // - Dev: wrangler secret put GEMINI_API_KEY --env dev
 }
