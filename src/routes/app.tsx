@@ -6,6 +6,8 @@ import { PaletteDisplay } from '~/components/chroma/PaletteDisplay'
 import { CodeExporter } from '~/components/chroma/CodeExporter'
 import { ThemeGallery } from '~/components/chroma/ThemeGallery'
 import { AdBanner } from '~/components/chroma/AdBanner'
+import { UsageLimitModal } from '~/components/chroma/UsageLimitModal'
+import { UsageIndicator } from '~/components/chroma/UsageIndicator'
 import { Button } from '~/components/ui/button'
 import {
   Dialog,
@@ -14,6 +16,7 @@ import {
   DialogTitle,
 } from '~/components/ui/dialog'
 import { generateColorScheme } from '~/services/gemini'
+import { useUsageLimit } from '~/hooks/useUsageLimit'
 import type { ColorToken } from '~/types/chroma'
 import { calculateDarkVariant } from '~/utils/colorUtils'
 import { seo } from '~/utils/seo'
@@ -69,6 +72,18 @@ function GeneratorApp() {
   const [showExportModal, setShowExportModal] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  // Usage Limit State
+  const { 
+    status, 
+    hasRemaining, 
+    canUseBonus, 
+    consume, 
+    claimBonus, 
+    isLoading: isUsageLoading 
+  } = useUsageLimit()
+  const [showLimitModal, setShowLimitModal] = useState(false)
+  const [isClaimingBonus, setIsClaimingBonus] = useState(false)
+
   const handleImageSelect = useCallback((file: File) => {
     setSelectedFile(file)
     const url = URL.createObjectURL(file)
@@ -91,6 +106,19 @@ function GeneratorApp() {
     const file = fileToProcess || selectedFile
     if (!file) return
 
+    // 检查额度
+    if (!hasRemaining) {
+      setShowLimitModal(true)
+      return
+    }
+
+    // 先消耗额度
+    const canProceed = await consume()
+    if (!canProceed) {
+      setShowLimitModal(true)
+      return
+    }
+
     setIsGenerating(true)
     setError(null)
 
@@ -112,6 +140,13 @@ function GeneratorApp() {
     handleImageSelect(file)
     await new Promise((r) => setTimeout(r, 100))
     await handleGenerate(file)
+  }
+
+  const handleClaimBonus = async () => {
+    setIsClaimingBonus(true)
+    const result = await claimBonus()
+    setIsClaimingBonus(false)
+    return result
   }
 
   const handleUpdateColor = (id: string, updates: Partial<ColorToken>) => {
@@ -179,11 +214,13 @@ function GeneratorApp() {
             <div className="space-y-3 animate-in fade-in slide-in-from-top-4 duration-500 shrink-0">
               <Button
                 onClick={() => handleGenerate()}
-                disabled={isGenerating}
+                disabled={isGenerating || isUsageLoading}
                 className="w-full py-3 text-base"
               >
                 {isGenerating ? (
                   'Generating...'
+                ) : isUsageLoading ? (
+                  'Loading...'
                 ) : (
                   <>
                     <Wand2 className="w-4 h-4 mr-2" />
@@ -191,6 +228,19 @@ function GeneratorApp() {
                   </>
                 )}
               </Button>
+              
+              {/* 使用状态指示器 */}
+              {status && (
+                <div className="flex items-center justify-between">
+                  <div className="text-xs text-zinc-500">
+                    今日可用
+                  </div>
+                  <UsageIndicator 
+                    remaining={status.remaining} 
+                    total={status.total} 
+                  />
+                </div>
+              )}
             </div>
           ) : (
             <section className="shrink-0 animate-in fade-in duration-700 delay-150">
@@ -254,6 +304,16 @@ function GeneratorApp() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* 额度用尽弹窗 */}
+      <UsageLimitModal
+        open={showLimitModal}
+        onOpenChange={setShowLimitModal}
+        status={status}
+        canUseBonus={canUseBonus}
+        onClaimBonus={handleClaimBonus}
+        isClaimingBonus={isClaimingBonus}
+      />
     </div>
   )
 }

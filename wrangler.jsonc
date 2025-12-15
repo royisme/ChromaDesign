@@ -9,6 +9,15 @@
     "ENVIRONMENT": "production",
   },
 
+  // KV namespaces
+  "kv_namespaces": [
+    {
+      "binding": "USAGE_KV",
+      "id": "cc1493e9deff497f97b6bac48eba9a17",
+      "preview_id": "48b8ab7c8f7c4eabb91574f2ab0d974d"
+    }
+  ],
+
   // Secrets (GEMINI_API_KEY) should be set via:
   // - Local development: .dev.vars file
   // - Production: wrangler secret put GEMINI_API_KEY
