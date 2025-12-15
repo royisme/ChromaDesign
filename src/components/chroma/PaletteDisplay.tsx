@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { ColorToken } from '~/types/chroma'
-import { Trash2, Plus, Type, Code2, Pencil, LayoutTemplate } from 'lucide-react'
+import { Trash2, Plus, Type, Code2, Pencil, LayoutTemplate, Smartphone, LayoutDashboard } from 'lucide-react'
 import { getContrastRatio, getWcagRating, getBestTextColor } from '~/utils/colorUtils'
 import { Button } from '~/components/ui/button'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '~/components/ui/tabs'
@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from '~/components/ui/select'
 import { PreviewDashboard } from './PreviewDashboard'
+import { PreviewMobile } from './PreviewMobile'
 
 interface PaletteDisplayProps {
   colors: ColorToken[]
@@ -22,6 +23,8 @@ interface PaletteDisplayProps {
   onExport: () => void
 }
 
+type PreviewType = 'dashboard' | 'mobile'
+
 export function PaletteDisplay({
   colors,
   mood,
@@ -31,6 +34,7 @@ export function PaletteDisplay({
   onExport,
 }: PaletteDisplayProps) {
   const [contrastBaseline, setContrastBaseline] = useState<string>('auto')
+  const [previewType, setPreviewType] = useState<PreviewType>('dashboard')
 
   return (
     <div className="w-full flex flex-col rounded-2xl overflow-hidden shadow-2xl bg-zinc-900 border border-zinc-800 animate-in fade-in slide-in-from-bottom-8 duration-700 h-full">
@@ -57,35 +61,58 @@ export function PaletteDisplay({
             )}
           </div>
 
-          {/* Actions (Only show in Editor Mode) */}
+          {/* Actions */}
           <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
-            {/* Contrast Controls */}
-            <div className="flex items-center gap-2">
-              <div className="relative">
-                <Type className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 pointer-events-none z-10" />
-                <Select value={contrastBaseline} onValueChange={setContrastBaseline}>
-                  <SelectTrigger className="pl-9 min-w-[140px] bg-zinc-800 border-zinc-700">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="auto">Auto Contrast</SelectItem>
-                    <SelectItem value="white">vs White</SelectItem>
-                    <SelectItem value="black">vs Black</SelectItem>
-                    {colors.map((c) => (
-                      <SelectItem key={c.id} value={c.id}>
-                        vs {c.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
+             {/* EDITOR VIEW CONTROLS */}
+             <TabsContent value="editor" className="m-0 flex items-center gap-3">
+                {/* Contrast Controls */}
+                <div className="flex items-center gap-2">
+                  <div className="relative">
+                    <Type className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 pointer-events-none z-10" />
+                    <Select value={contrastBaseline} onValueChange={setContrastBaseline}>
+                      <SelectTrigger className="pl-9 min-w-[140px] bg-zinc-800 border-zinc-700">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="auto">Auto Contrast</SelectItem>
+                        <SelectItem value="white">vs White</SelectItem>
+                        <SelectItem value="black">vs Black</SelectItem>
+                        {colors.map((c) => (
+                          <SelectItem key={c.id} value={c.id}>
+                            vs {c.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
 
-            {/* Export Button */}
-            <Button variant="secondary" onClick={onExport} className="gap-2">
-              <Code2 className="w-4 h-4" />
-              <span>Export</span>
-            </Button>
+                {/* Export Button */}
+                <Button variant="secondary" onClick={onExport} className="gap-2">
+                  <Code2 className="w-4 h-4" />
+                  <span>Export</span>
+                </Button>
+            </TabsContent>
+
+            {/* PREVIEW VIEW CONTROLS */}
+            <TabsContent value="preview" className="m-0 flex items-center gap-3">
+               <div className="flex bg-zinc-800 rounded-lg p-0.5 border border-zinc-700">
+                  <button
+                    onClick={() => setPreviewType('dashboard')}
+                    className={`p-1.5 rounded-md transition-all ${previewType === 'dashboard' ? 'bg-zinc-600 text-white shadow-sm' : 'text-zinc-400 hover:text-zinc-200'}`}
+                    title="Dashboard View"
+                  >
+                    <LayoutDashboard className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => setPreviewType('mobile')}
+                    className={`p-1.5 rounded-md transition-all ${previewType === 'mobile' ? 'bg-zinc-600 text-white shadow-sm' : 'text-zinc-400 hover:text-zinc-200'}`}
+                    title="Mobile App View"
+                  >
+                    <Smartphone className="w-4 h-4" />
+                  </button>
+               </div>
+            </TabsContent>
           </div>
         </div>
 
@@ -250,8 +277,12 @@ export function PaletteDisplay({
           </TabsContent>
 
           {/* PREVIEW VIEW */}
-          <TabsContent value="preview" className="h-full m-0 p-4 md:p-6 data-[state=inactive]:hidden">
-            <PreviewDashboard colors={colors} />
+          <TabsContent value="preview" className="h-full m-0 p-4 md:p-6 data-[state=inactive]:hidden flex justify-center">
+             {previewType === 'dashboard' ? (
+                <PreviewDashboard colors={colors} />
+             ) : (
+                <PreviewMobile colors={colors} />
+             )}
           </TabsContent>
         </div>
       </Tabs>

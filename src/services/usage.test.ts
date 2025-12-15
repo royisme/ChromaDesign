@@ -41,7 +41,7 @@ describe('Usage Limits Logic', () => {
 
     it('should reflect usage from KV', async () => {
       // Setup: user used 1 time
-      await mockKV.put(`visitor:${visitorId}`, JSON.stringify({
+      await mockKV.put(`ip:${visitorId}`, JSON.stringify({
         date: '2024-01-15',
         used: 1,
         bonusUsed: false
@@ -53,7 +53,7 @@ describe('Usage Limits Logic', () => {
 
     it('should reset quota on next day', async () => {
       // Setup: user used all quota yesterday
-      await mockKV.put(`visitor:${visitorId}`, JSON.stringify({
+      await mockKV.put(`ip:${visitorId}`, JSON.stringify({
         date: '2024-01-14',
         used: 3,
         bonusUsed: false
@@ -73,7 +73,7 @@ describe('Usage Limits Logic', () => {
       expect(result.remaining).toBe(USAGE_LIMITS.DAILY_FREE - 1)
 
       // Verify KV update
-      const record = await mockKV.get(`visitor:${visitorId}`, 'json')
+      const record = await mockKV.get(`ip:${visitorId}`, 'json')
       expect(record).toEqual({
         date: '2024-01-15',
         used: 1,
@@ -83,7 +83,7 @@ describe('Usage Limits Logic', () => {
 
     it('should fail when quota exceeded', async () => {
       // Setup: use all quota
-      await mockKV.put(`visitor:${visitorId}`, JSON.stringify({
+      await mockKV.put(`ip:${visitorId}`, JSON.stringify({
         date: '2024-01-15',
         used: 3,
         bonusUsed: false
@@ -97,7 +97,7 @@ describe('Usage Limits Logic', () => {
 
     it('should allow usage with bonus quota', async () => {
       // Setup: used 3 times but has bonus
-      await mockKV.put(`visitor:${visitorId}`, JSON.stringify({
+      await mockKV.put(`ip:${visitorId}`, JSON.stringify({
         date: '2024-01-15',
         used: 3,
         bonusUsed: true // Has bonus (+1)
@@ -109,7 +109,7 @@ describe('Usage Limits Logic', () => {
       expect(result.remaining).toBe(0) // Total 4, Used 4 (3+1) -> Remaining 0
 
       // Verify KV: used should be 4
-      const record = await mockKV.get(`visitor:${visitorId}`, 'json')
+      const record = await mockKV.get(`ip:${visitorId}`, 'json')
       expect(record?.used).toBe(4)
     })
   })
@@ -122,7 +122,7 @@ describe('Usage Limits Logic', () => {
       expect(result.message).toContain('成功')
 
       // Verify KV
-      const record = await mockKV.get(`visitor:${visitorId}`, 'json')
+      const record = await mockKV.get(`ip:${visitorId}`, 'json')
       expect(record?.bonusUsed).toBe(true)
     })
 
@@ -139,7 +139,7 @@ describe('Usage Limits Logic', () => {
 
     it('should allow claiming again next day', async () => {
       // Claimed yesterday
-      await mockKV.put(`visitor:${visitorId}`, JSON.stringify({
+      await mockKV.put(`ip:${visitorId}`, JSON.stringify({
         date: '2024-01-14',
         used: 1,
         bonusUsed: true
