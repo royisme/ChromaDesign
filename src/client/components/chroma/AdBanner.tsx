@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 interface AdBannerProps {
   slotId: string
@@ -15,15 +15,21 @@ export function AdBanner({
   className = '',
   label = 'Advertisement',
 }: AdBannerProps) {
+  const [mounted, setMounted] = useState(false)
   const initialized = useRef(false)
   const isDev = slotId === 'PLACEHOLDER_SLOT_ID'
 
   // Get AdSense client ID from environment
   const adsenseClientId = import.meta.env.VITE_ADSENSE_CLIENT_ID || 'ca-pub-XXXXXXXXXXXXXXXX'
 
+  // Detect client-side mount
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
   useEffect(() => {
     // Prevent double initialization in React Strict Mode
-    if (initialized.current) return
+    if (!mounted || initialized.current) return
 
     // Don't initialize AdSense if we are showing the placeholder
     if (isDev) return
@@ -38,10 +44,22 @@ export function AdBanner({
     } catch (err) {
       console.error('AdSense error:', err)
     }
-  }, [isDev])
+  }, [mounted, isDev])
+
+  // Return placeholder during SSR
+  if (!mounted) {
+    return (
+      <div suppressHydrationWarning className={`flex flex-col items-center justify-center my-4 overflow-hidden ${className}`}>
+        {label && (
+          <span className="text-[10px] text-zinc-600 uppercase tracking-widest mb-1">{label}</span>
+        )}
+        <div className="w-full min-h-[100px]" />
+      </div>
+    )
+  }
 
   return (
-    <div className={`flex flex-col items-center justify-center my-4 overflow-hidden ${className}`}>
+    <div suppressHydrationWarning className={`flex flex-col items-center justify-center my-4 overflow-hidden ${className}`}>
       {label && (
         <span className="text-[10px] text-zinc-600 uppercase tracking-widest mb-1">{label}</span>
       )}

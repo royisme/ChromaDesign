@@ -39,5 +39,5 @@ UserAgents.md
 test-results
 
 # cloudflare
-dist
+dist/
 .wrangler
