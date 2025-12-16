@@ -113,19 +113,19 @@ function GeneratorApp() {
     const file = fileToProcess || selectedFile
     if (!file) return
 
-    // 检查额度
+    // Check quota
     if (!hasRemaining) {
       setShowLimitModal(true)
       return
     }
 
-    // 检查 Turnstile token
+    // Check Turnstile token
     if (TURNSTILE_SITE_KEY && !turnstileToken) {
       setError('Please complete the security verification.')
       return
     }
 
-    // 先消耗额度
+    // Consume quota first
     const canProceed = await consume()
     if (!canProceed) {
       setShowLimitModal(true)
@@ -262,11 +262,11 @@ function GeneratorApp() {
                 />
               )}
               
-              {/* 使用状态指示器 */}
+              {/* Usage status indicator */}
               {status && (
                 <div className="flex items-center justify-between">
                   <div className="text-xs text-zinc-500">
-                    今日可用
+                    Daily Usage
                   </div>
                   <UsageIndicator 
                     remaining={status.remaining} 
@@ -338,7 +338,7 @@ function GeneratorApp() {
         </DialogContent>
       </Dialog>
 
-      {/* 额度用尽弹窗 */}
+      {/* Quota exceeded modal */}
       <UsageLimitModal
         open={showLimitModal}
         onOpenChange={setShowLimitModal}

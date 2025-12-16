@@ -1,27 +1,27 @@
 /**
- * 用户使用记录
+ * User Usage Record
  */
 export interface UsageRecord {
-  date: string      // ISO 日期格式 "YYYY-MM-DD"
-  used: number      // 今日已使用次数
-  bonusUsed: boolean // 今日是否已使用分享奖励
+  date: string; // ISO Date "YYYY-MM-DD"
+  used: number; // Used count today
+  bonusUsed: boolean; // Whether share bonus is used today
 }
 
 /**
- * 使用状态响应
+ * Usage Status Response
  */
 export interface UsageStatus {
-  remaining: number     // 剩余可用次数
-  total: number         // 今日总额度
-  canUseBonus: boolean  // 是否可以使用分享奖励
-  resetAt: string       // 下次重置时间 (ISO)
+  remaining: number; // Remaining quota
+  total: number; // Total quota for today
+  canUseBonus: boolean; // Whether share bonus can be used
+  resetAt: string; // Next reset time (ISO)
 }
 
 /**
- * 配额常量
+ * Quota Limits
  */
 export const USAGE_LIMITS = {
-  DAILY_FREE: 3,        // 每日免费次数
-  SHARE_BONUS: 1,       // 分享奖励次数
-  KV_TTL: 60 * 60 * 24 * 7, // 7天 TTL（秒）
-} as const
+  DAILY_FREE: 3, // Daily free limit
+  SHARE_BONUS: 1, // Share bonus limit
+  KV_TTL: 60 * 60 * 24 * 7, // 7 days TTL (seconds)
+} as const;

@@ -39,24 +39,24 @@ export function UsageLimitModal({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <span className="text-2xl">😊</span>
-            今日免费次数已用完
+            Daily free limit reached
           </DialogTitle>
           <DialogDescription>
-            每天 UTC 0:00 刷新免费次数
+            Free quota resets at UTC 0:00 daily
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 pt-4">
-          {/* 分享解锁 */}
+          {/* Share to unlock */}
           <div className="p-4 rounded-lg bg-zinc-900 border border-zinc-800">
             <div className="flex items-start gap-3">
               <div className="p-2 rounded-lg bg-zinc-800">
                 <Link2 className="w-5 h-5 text-zinc-400" />
               </div>
               <div className="flex-1">
-                <h3 className="font-medium text-zinc-200">分享给朋友</h3>
+                <h3 className="font-medium text-zinc-200">Share with friends</h3>
                 <p className="text-sm text-zinc-500 mt-1">
-                  复制链接，帮助更多设计师发现这个工具
+                  Copy link to help more designers discover this tool
                 </p>
                 <Button
                   onClick={handleClaimBonus}
@@ -67,20 +67,20 @@ export function UsageLimitModal({
                   {isClaimingBonus ? (
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                   ) : null}
-                  {canUseBonus ? '复制链接获得 +1 次' : '今日已领取'}
+                  {canUseBonus ? 'Copy link to get +1 quota' : 'Claimed today'}
                 </Button>
               </div>
             </div>
           </div>
 
-          {/* 明天再来 */}
+          {/* Come back tomorrow */}
           <div className="p-4 rounded-lg border border-dashed border-zinc-800">
             <div className="flex items-center gap-3 text-zinc-500">
               <Clock className="w-5 h-5" />
               <div>
-                <p className="font-medium text-zinc-400">或者明天再来</p>
+                <p className="font-medium text-zinc-400">Or come back tomorrow</p>
                 <p className="text-sm">
-                  下次刷新: {status?.resetAt ? new Date(status.resetAt).toLocaleString() : '明天'}
+                  Next reset: {status?.resetAt ? new Date(status.resetAt).toLocaleString() : 'Tomorrow'}
                 </p>
               </div>
             </div>
