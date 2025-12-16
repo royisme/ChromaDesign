@@ -61,6 +61,18 @@ export function Turnstile({
   const containerRef = useRef<HTMLDivElement>(null)
   const widgetIdRef = useRef<string | null>(null)
   const [isMounted, setIsMounted] = useState(false)
+  
+  // Store callbacks in refs to avoid re-renders
+  const onVerifyRef = useRef(onVerify)
+  const onErrorRef = useRef(onError)
+  const onExpireRef = useRef(onExpire)
+  
+  // Update refs when callbacks change
+  useEffect(() => {
+    onVerifyRef.current = onVerify
+    onErrorRef.current = onError
+    onExpireRef.current = onExpire
+  }, [onVerify, onError, onExpire])
 
   // Only run on client side
   useEffect(() => {
@@ -71,13 +83,9 @@ export function Turnstile({
     if (typeof window === 'undefined') return
     if (!containerRef.current || !window.turnstile) return
 
-    // Clean up existing widget
+    // Don't re-render if widget already exists
     if (widgetIdRef.current) {
-      try {
-        window.turnstile.remove(widgetIdRef.current)
-      } catch {
-        // Ignore errors during cleanup
-      }
+      return
     }
 
     // Render new widget
@@ -85,15 +93,15 @@ export function Turnstile({
     // that don't support /cdn-cgi/ paths (PAT challenge)
     widgetIdRef.current = window.turnstile.render(containerRef.current, {
       sitekey: siteKey,
-      callback: onVerify,
-      'error-callback': onError,
-      'expired-callback': onExpire,
-      'refresh-expired': 'auto',
+      callback: (token: string) => onVerifyRef.current(token),
+      'error-callback': () => onErrorRef.current?.(),
+      'expired-callback': () => onExpireRef.current?.(),
+      'refresh-expired': 'never',
       retry: 'never',
       theme,
       size,
     })
-  }, [siteKey, onVerify, onError, onExpire, theme, size])
+  }, [siteKey, theme, size])
 
   useEffect(() => {
     // Skip on server side

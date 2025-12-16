@@ -64,7 +64,7 @@ function LandingPage() {
       {/* Ad Section */}
       <section className="max-w-5xl mx-auto w-full px-6 py-12 border-b border-zinc-800/50 relative z-10">
         <AdBanner
-          slotId="PLACEHOLDER_SLOT_ID"
+          slotId={import.meta.env.VITE_ADSENSE_SLOT_HOME || 'PLACEHOLDER_SLOT_ID'}
           label="Sponsored"
           className="min-h-[120px] opacity-80 hover:opacity-100 transition-opacity"
         />

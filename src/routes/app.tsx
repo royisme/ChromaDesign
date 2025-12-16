@@ -291,7 +291,7 @@ function GeneratorApp() {
           <div className="mt-auto pt-4 shrink-0">
             <div className="bg-zinc-900/50 border border-dashed border-zinc-800 rounded-xl overflow-hidden">
               <AdBanner
-                slotId="PLACEHOLDER_SLOT_ID"
+                slotId={import.meta.env.VITE_ADSENSE_SLOT_SIDEBAR || 'PLACEHOLDER_SLOT_ID'}
                 format="rectangle"
                 className="my-0 opacity-70 hover:opacity-100 transition-opacity"
               />
