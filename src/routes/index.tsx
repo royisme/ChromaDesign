@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { Palette, Zap, Code2, Layout, ArrowRight, Upload } from 'lucide-react'
+import { Palette, Zap, Code2, Layout, ArrowRight, Upload, Github } from 'lucide-react'
 import { Button } from '@/client/ui/button'
 import { ThemeGallery } from '@/client/components/chroma/ThemeGallery'
 import { AdBanner } from '@/client/components/chroma/AdBanner'
@@ -17,10 +17,62 @@ export const Route = createFileRoute('/')({
 })
 
 function LandingPage() {
+  const scrollToSection = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+  }
+
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground font-sans selection:bg-white/20">
       {/* Background Grid Pattern */}
       <div className="fixed inset-0 z-0 opacity-[0.03] pointer-events-none bg-grid-pattern" />
+
+      {/* Sticky Header */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-zinc-800/50">
+        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+          {/* Logo + Brand */}
+          <Link to="/" className="flex items-center gap-3 group">
+            <img 
+              src="/logo.svg" 
+              alt="ChromaGen AI" 
+              className="h-8 w-8"
+            />
+            <span className="text-lg font-semibold text-white group-hover:text-zinc-300 transition-colors">
+              ChromaGen AI
+            </span>
+          </Link>
+
+          {/* Navigation */}
+          <nav className="hidden md:flex items-center gap-8">
+            <button 
+              onClick={() => scrollToSection('features')}
+              className="text-sm text-zinc-400 hover:text-white transition-colors"
+            >
+              Features
+            </button>
+            <button 
+              onClick={() => scrollToSection('presets')}
+              className="text-sm text-zinc-400 hover:text-white transition-colors"
+            >
+              Presets
+            </button>
+            <Button asChild size="sm" className="h-9 px-4">
+              <Link to="/app">
+                Start Generating
+                <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
+              </Link>
+            </Button>
+          </nav>
+
+          {/* Mobile CTA */}
+          <div className="md:hidden">
+            <Button asChild size="sm" className="h-9 px-4">
+              <Link to="/app">
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </header>
 
       {/* Hero Section */}
       <section className="relative z-10 pt-32 pb-24 px-6 border-b border-zinc-800/50">
@@ -71,7 +123,7 @@ function LandingPage() {
       </section>
 
       {/* Features Grid */}
-      <section className="py-24 relative z-10">
+      <section id="features" className="py-24 relative z-10 scroll-mt-20">
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid md:grid-cols-3 gap-8">
             {[
@@ -107,7 +159,7 @@ function LandingPage() {
       </section>
 
       {/* Quick Start / Gallery Section */}
-      <section className="py-24 px-6 max-w-6xl mx-auto w-full border-t border-zinc-800/50 relative z-10">
+      <section id="presets" className="py-24 px-6 max-w-6xl mx-auto w-full border-t border-zinc-800/50 relative z-10 scroll-mt-20">
         <div className="flex flex-col md:flex-row items-end justify-between mb-10 gap-4">
           <div>
             <h2 className="text-2xl font-bold text-white mb-2">Curated Presets</h2>
@@ -126,9 +178,38 @@ function LandingPage() {
         </div>
       </section>
 
-      <footer className="py-12 text-center text-zinc-600 text-sm border-t border-zinc-800 relative z-10">
-        <p>© {new Date().getFullYear()} ChromaGen AI.</p>
+      {/* Footer */}
+      <footer className="py-12 border-t border-zinc-800 relative z-10">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            {/* Brand */}
+            <div className="flex items-center gap-3">
+              <img 
+                src="/logo.svg" 
+                alt="ChromaGen AI" 
+                className="h-6 w-6 opacity-60"
+              />
+              <span className="text-sm text-zinc-500">
+                © {new Date().getFullYear()} Roy. Built with AI.
+              </span>
+            </div>
+
+            {/* Social Links */}
+            <div className="flex items-center gap-4">
+              <a 
+                href="https://github.com/royisme" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-zinc-600 hover:text-zinc-400 transition-colors"
+                aria-label="GitHub"
+              >
+                <Github className="w-5 h-5" />
+              </a>
+            </div>
+          </div>
+        </div>
       </footer>
     </div>
   )
 }
+

@@ -205,7 +205,7 @@ function GeneratorApp() {
           </Button>
           {/* Logo Icon */}
           <div className="p-2 bg-zinc-900 border border-zinc-800 rounded-lg">
-            <Palette className="w-5 h-5 text-white" />
+            <img src="/logo.svg" alt="Logo" className="w-5 h-5" />
           </div>
           <div>
             <h1 className="text-xl font-bold tracking-tight text-white">ChromaGen AI</h1>

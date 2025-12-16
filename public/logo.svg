@@ -1,0 +1,36 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad1" x1="100" y1="20" x2="100" y2="180" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#22d3ee" /> <!-- Cyan-400 -->
+      <stop offset="100%" stop-color="#3b82f6" /> <!-- Blue-500 -->
+    </linearGradient>
+    <linearGradient id="grad2" x1="20" y1="150" x2="180" y2="20" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#e879f9" /> <!-- Fuchsia-400 -->
+      <stop offset="100%" stop-color="#a855f7" /> <!-- Purple-500 -->
+    </linearGradient>
+    <linearGradient id="grad3" x1="180" y1="150" x2="20" y2="20" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fbbf24" /> <!-- Amber-400 -->
+      <stop offset="100%" stop-color="#f97316" /> <!-- Orange-500 -->
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+  
+  <!-- Abstract Geometric Shape: Interlocking Rounded Triangles/Hex -->
+  <g filter="url(#glow)">
+    <!-- Top Left Wing -->
+    <path d="M100 110 L60 170 L20 100 L60 40 Z" fill="url(#grad2)" fill-opacity="0.9" style="mix-blend-mode: screen"/>
+    
+    <!-- Top Right Wing -->
+    <path d="M100 110 L140 40 L180 100 L140 170 Z" fill="url(#grad3)" fill-opacity="0.9" style="mix-blend-mode: screen"/>
+    
+    <!-- Top Wing -->
+    <path d="M100 110 L60 40 L100 10 L140 40 Z" fill="url(#grad1)" fill-opacity="0.9" style="mix-blend-mode: screen"/>
+  </g>
+  
+  <!-- Central Core Light -->
+  <circle cx="100" cy="80" r="15" fill="white" fill-opacity="0.3" filter="url(#glow)"/>
+
+</svg>
