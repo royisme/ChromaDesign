@@ -5,69 +5,73 @@
   "compatibility_flags": ["nodejs_compat"],
   "main": "@tanstack/react-start/server-entry",
   "observability": {
-    "enabled": true
+    "enabled": true,
   },
-
+  "ai": {
+    "binding": "AI",
+    "remote": true,
+  },
   "env": {
     // Local development - reads secrets from .dev.vars
     "dev": {
       "name": "chroma-design-dev",
       "ai": {
-        "binding": "AI"
+        "binding": "AI",
+        "remote": true,
       },
       "vars": {
         "ENVIRONMENT": "development",
         "AI_GATEWAY_ID": "chroma-design",
         "AI_PROVIDER": "openrouter",
-        "AI_MODEL": "google/gemini-2.5-flash"
+        "AI_MODEL": "google/gemini-2.5-flash",
       },
       "kv_namespaces": [
         {
           "binding": "USAGE_KV",
           "id": "abf526f5ff7843d2b45365f1ce8225d7",
-          "preview_id": "48b8ab7c8f7c4eabb91574f2ab0d974d"
-        }
-      ]
+          "preview_id": "48b8ab7c8f7c4eabb91574f2ab0d974d",
+        },
+      ],
     },
 
     // Staging environment
     "staging": {
       "name": "chroma-design-staging",
       "ai": {
-        "binding": "AI"
+        "binding": "AI",
       },
       "vars": {
         "ENVIRONMENT": "staging",
         "AI_GATEWAY_ID": "chroma-design",
         "AI_PROVIDER": "openrouter",
-        "AI_MODEL": "google/gemini-2.5-flash"
+        "AI_MODEL": "google/gemini-2.5-flash",
       },
       "kv_namespaces": [
         {
           "binding": "USAGE_KV",
-          "id": "abf526f5ff7843d2b45365f1ce8225d7"
-        }
-      ]
+          "id": "abf526f5ff7843d2b45365f1ce8225d7",
+        },
+      ],
     },
 
     // Production environment
     "production": {
       "name": "chroma-design",
       "ai": {
-        "binding": "AI"
+        "binding": "AI",
       },
       "vars": {
         "ENVIRONMENT": "production",
         "AI_GATEWAY_ID": "chroma-design",
         "AI_PROVIDER": "openrouter",
-        "AI_MODEL": "google/gemini-2.5-flash"
+        "AI_MODEL": "google/gemini-2.5-flash",
       },
       "kv_namespaces": [
         {
           "binding": "USAGE_KV",
-          "id": "cc1493e9deff497f97b6bac48eba9a17"
-        }
-      ]
-    }
-  }
+          "id": "cc1493e9deff497f97b6bac48eba9a17",
+        },
+      ],
+    },
+  },
 }
