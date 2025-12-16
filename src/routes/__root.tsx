@@ -68,13 +68,7 @@ export const Route = createRootRouteWithContext<{
 
       { rel: 'icon', href: '/favicon.ico' },
     ],
-    scripts: [
-      {
-        src: `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${import.meta.env.VITE_ADSENSE_CLIENT_ID}`,
-        async: true,
-        crossOrigin: 'anonymous',
-      },
-    ],
+
   }),
   errorComponent: (props) => {
     return (
