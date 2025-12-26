@@ -5,6 +5,7 @@
  */
 
 import { createServerFn } from "@tanstack/react-start";
+import { getRequestHeader } from "@tanstack/react-start/server";
 import { env } from "cloudflare:workers";
 import type { UsageRecord, UsageStatus } from "@/types/usage";
 import { USAGE_LIMITS } from "@/types/usage";
@@ -22,11 +23,27 @@ export function getNextResetTime(date: Date = new Date()): string {
   return tomorrow.toISOString();
 }
 
+// Helper to get Client IP
+function getClientIp(): string {
+  // Cloudflare
+  const cfIp = getRequestHeader("cf-connecting-ip");
+  if (cfIp) return cfIp;
+
+  // Standard Proxy
+  const forwarded = getRequestHeader("x-forwarded-for");
+  if (forwarded) {
+    return forwarded.split(",")[0].trim();
+  }
+
+  // Fallback for local development
+  return "127.0.0.1";
+}
+
 // --- Core Business Logic (Pure Functions) ---
 
 export async function checkUsageLogic(
   kv: KVNamespace | undefined,
-  visitorId: string,
+  identifier: string,
   now: Date = new Date()
 ): Promise<UsageStatus> {
   const today = getTodayUTC(now);
@@ -42,7 +59,8 @@ export async function checkUsageLogic(
     };
   }
 
-  const key = `visitor:${visitorId}`;
+  // Use 'ip:' prefix for IP-based tracking
+  const key = `ip:${identifier}`;
   const record = await kv.get<UsageRecord>(key, "json");
 
   // Return full quota if no record or date is not today
@@ -69,7 +87,7 @@ export async function checkUsageLogic(
 
 export async function consumeUsageLogic(
   kv: KVNamespace | undefined,
-  visitorId: string,
+  identifier: string,
   now: Date = new Date()
 ): Promise<{ success: boolean; remaining: number }> {
   const today = getTodayUTC(now);
@@ -84,7 +102,7 @@ export async function consumeUsageLogic(
     };
   }
 
-  const key = `visitor:${visitorId}`;
+  const key = `ip:${identifier}`;
   let record = await kv.get<UsageRecord>(key, "json");
 
   // New user or new day
@@ -115,7 +133,7 @@ export async function consumeUsageLogic(
 
 export async function claimShareBonusLogic(
   kv: KVNamespace | undefined,
-  visitorId: string,
+  identifier: string,
   now: Date = new Date()
 ): Promise<{ success: boolean; message: string }> {
   const today = getTodayUTC(now);
@@ -130,7 +148,7 @@ export async function claimShareBonusLogic(
     };
   }
 
-  const key = `visitor:${visitorId}`;
+  const key = `ip:${identifier}`;
   let record = await kv.get<UsageRecord>(key, "json");
 
   if (!record || record.date !== today) {
@@ -151,24 +169,21 @@ export async function claimShareBonusLogic(
 
 // --- Server Functions (Wrappers) ---
 
-// Validator for check usage
+// Validator for check usage - keep visitorId optional or ignored
 const checkUsageValidator = (input: unknown) => {
-  const data = input as { visitorId: string };
-  if (!data.visitorId) throw new Error("visitorId is required");
+  const data = input as { visitorId?: string };
   return data;
 };
 
 // Validator for consume usage
 const consumeUsageValidator = (input: unknown) => {
-  const data = input as { visitorId: string };
-  if (!data.visitorId) throw new Error("visitorId is required");
+  const data = input as { visitorId?: string };
   return data;
 };
 
 // Validator for claim bonus
 const claimBonusValidator = (input: unknown) => {
-  const data = input as { visitorId: string };
-  if (!data.visitorId) throw new Error("visitorId is required");
+  const data = input as { visitorId?: string };
   return data;
 };
 
@@ -178,7 +193,8 @@ const claimBonusValidator = (input: unknown) => {
 export const checkUsage = createServerFn({ method: "POST" })
   .inputValidator(checkUsageValidator)
   .handler(async ({ data }): Promise<UsageStatus> => {
-    return checkUsageLogic(env.USAGE_KV, data.visitorId);
+    const ip = getClientIp();
+    return checkUsageLogic(env.USAGE_KV, ip);
   });
 
 /**
@@ -188,7 +204,8 @@ export const consumeUsage = createServerFn({ method: "POST" })
   .inputValidator(consumeUsageValidator)
   .handler(
     async ({ data }): Promise<{ success: boolean; remaining: number }> => {
-      return consumeUsageLogic(env.USAGE_KV, data.visitorId);
+      const ip = getClientIp();
+      return consumeUsageLogic(env.USAGE_KV, ip);
     }
   );
 
@@ -198,5 +215,6 @@ export const consumeUsage = createServerFn({ method: "POST" })
 export const claimShareBonus = createServerFn({ method: "POST" })
   .inputValidator(claimBonusValidator)
   .handler(async ({ data }): Promise<{ success: boolean; message: string }> => {
-    return claimShareBonusLogic(env.USAGE_KV, data.visitorId);
+    const ip = getClientIp();
+    return claimShareBonusLogic(env.USAGE_KV, ip);
   });
