@@ -9,7 +9,8 @@ AI-powered color palette generator that extracts semantic, accessible color toke
 - **Accessible Colors** - Generates WCAG-compliant color scales with proper contrast ratios
 - **Live Preview** - Visualize your palette on a professional dashboard interface in real-time
 - **Export Ready** - Copy-paste ready code for Tailwind v4 (`@theme` variables) and CSS Custom Properties
-- **Preset Themes** - Curated photo presets to jumpstart your design
+- **Preset Themes** - Curated photo presets to jumpstart your design (Configurable)
+- **Rate Limiting** - IP-based usage limits (3 free generations/day)
 
 ## Tech Stack
 
@@ -21,6 +22,12 @@ AI-powered color palette generator that extracts semantic, accessible color toke
 | AI | [Google Gemini 2.5 Flash](https://ai.google.dev/) |
 | Deployment | [Cloudflare Workers](https://workers.cloudflare.com/) |
 | Package Manager | [Bun](https://bun.sh/) |
+
+## Configuration
+
+### Configurable Reference Map (Themes)
+
+The preset themes can be configured in `src/config/themes.ts`. You can add, remove, or modify the themes displayed in the gallery.
 
 ## Project Structure
 
