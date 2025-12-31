@@ -3,11 +3,13 @@ import { describe, it, expect, vi } from 'vitest'
 import { USAGE_LIMITS } from '@/types/usage'
 
 // Mock cloudflare:workers
-vi.mock('cloudflare:workers', () => ({
-  env: {
-    USAGE_KV: {}
+vi.mock('cloudflare:workers', () => {
+  return {
+    env: {
+      USAGE_KV: {}
+    }
   }
-}))
+})
 
 // Mock @tanstack/react-start/server
 vi.mock('@tanstack/react-start/server', () => ({
